@@ -1,7 +1,7 @@
 <launch>
   <!-- start publishing odometry data and running base controller -->
   <include
-    file="$(find ros_arduino_python)/launch/ardino.launch"
+    file="$(find ros_arduino_python)/launch/arduino.launch"
   />
   <!-- Publish static transform: base_link to base_footprint -->
   <node
@@ -15,6 +15,6 @@
     pkg="teleop_twist_keyboard"
     type="teleop_twist_keyboard.py"
     name="saturn_teleop"
-    launch-prefix="xterm-e"
+    launch-prefix="xterm -e"
   />
 </launch>
