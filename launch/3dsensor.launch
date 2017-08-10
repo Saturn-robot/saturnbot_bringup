@@ -1,13 +1,13 @@
-<!-- 
+<!--
   Turtlebot is a bit low on horsepower...
 
   We use openni_camera here, turn everything on by default
   (allows the user to conveniently see everything when
-  launching this on its own - use with 
+  launching this on its own - use with
   turtebot_rviz_launchers/view_robot.launch to visualise)
   and provide args to disable them so you can optimise the
   horsepower for your application.
-  
+
   For an example of disabling processing modules, check
   any of the turtlebot_rapps (e.g. android_make_a_map.launch
   only enables scan_processing for depthimage_to_laserscan and
@@ -18,7 +18,7 @@
        into the "camera" namespace, and it is prepended to tf frame ids. -->
   <arg name="camera"      default="camera"/>
   <!-- arg name="publish_tf"  default="false"/ -->
-  <arg name="publish_tf"  default="true"/>
+  <arg name="publish_tf"  default="false"/>
   <arg name="3d_sensor"   default="$(env TURTLEBOT_3D_SENSOR)"/>  <!-- kinect, asus_xtion_pro -->
 
   <!-- Factory-calibrated depth registration -->
@@ -56,7 +56,7 @@
     <arg name="disparity_registered_processing" value="$(arg disparity_registered_processing)"/>
   </include>
 
-   <!--                        Laserscan 
+   <!--                        Laserscan
      This uses lazy subscribing, so will not activate until scan is requested.
    -->
   <group if="$(arg scan_processing)">
