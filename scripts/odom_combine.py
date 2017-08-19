@@ -45,25 +45,30 @@ class OdomCombine:
         while not rospy.is_shutdown():
             now = rospy.Time.now()
 
-            #(r, p, y) = euler_from_quaternion((self.odom_orient.x, self.odom_orient.y,
-            #                                   self.odom_orient.z, self.odom_orient.w))
-            #(x, y, z, w) = quaternion_from_euler(y, p, r)
+            (r, p, y) = euler_from_quaternion((self.odom_orient.x, self.odom_orient.y,
+                                               self.odom_orient.z, self.odom_orient.w))
+            (x, y, z, w) = quaternion_from_euler(0, 0, y)
             # Create the odometry transform frame broadcaster.
-            z = self.odom_orient.z
-            w = self.odom_orient.w
+            quat = Quaternion()
+            quat.x = x
+            quat.y = y
+            quat.z = z
+            quat.w = w
+            #z = self.odom_orient.z
+            #w = self.odom_orient.w
             self.odomBroadcaster.sendTransform((self.odom_posit.x, self.odom_posit.y, self.odom_posit.z),
-                                               (0, 0, z, w),
+                                               (x, y, z, w),
                                                now,
                                                self.base_frame,
                                                "odom")
-            rospy.loginfo("Orient Data: %s %s", self.odom_orient.z, self.odom_orient.w)
+            rospy.loginfo("Orient Data: %s %s %s %s", x, y, z, w)
             # Create odom data and publish it
             odom = Odometry()
             odom.header.frame_id = "odom"
             odom.child_frame_id = self.base_frame
             odom.header.stamp = now
             odom.pose.pose.position = self.odom_posit
-            odom.pose.pose.orientation = self.odom_orient
+            odom.pose.pose.orientation = quat
             odom.twist.twist.linear.x = self.linear_vel
             odom.twist.twist.linear.y = 0
             odom.twist.twist.angular.z = self.angular_vel
