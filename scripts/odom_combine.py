@@ -12,15 +12,21 @@ Combine data from imu and wheels' odometry,
 and publish accurate odometry and TF between odom and base_frame
 """
 class OdomCombine:
-    def __init__(self, base_frame='base_footprint', name='odom_combine'):
+    def __init__(self, base_frame='base_footprint', name='odom_combine', calib_scale=1.0, calib_offset=0.0):
         self.base_frame = base_frame
         self.name = name
+        self.calib_scale = calib_scale
+        self.calib_offset = calib_offset
+
         rospy.init_node(name, log_level=rospy.INFO)
+
+        # Subscribe odometry data and imu data
         rospy.Subscriber('arduino/odom', Odometry, self.odom_callback)
         rospy.Subscriber('/imu/data', Imu, self.imu_callback)
         # Set up the odometry broadcaster
         self.odomPub = rospy.Publisher('odom', Odometry, queue_size=5)
         self.odomBroadcaster = TransformBroadcaster()
+        # Initialize data
         self.odom_posit = Point()
         self.odom_orient = Quaternion()
         self.linear_vel = 0.0
@@ -42,11 +48,14 @@ class OdomCombine:
 
     def odom_combine(self):
         rate = rospy.Rate(10)
+
         while not rospy.is_shutdown():
             now = rospy.Time.now()
 
             (r, p, y) = euler_from_quaternion((self.odom_orient.x, self.odom_orient.y,
                                                self.odom_orient.z, self.odom_orient.w))
+            # calibrate value yaw
+            y = y * self.calib_scale + self.calib_offset
             (x, y, z, w) = quaternion_from_euler(0, 0, y)
             # Create the odometry transform frame broadcaster.
             quat = Quaternion()
@@ -54,8 +63,7 @@ class OdomCombine:
             quat.y = y
             quat.z = z
             quat.w = w
-            #z = self.odom_orient.z
-            #w = self.odom_orient.w
+
             self.odomBroadcaster.sendTransform((self.odom_posit.x, self.odom_posit.y, self.odom_posit.z),
                                                (x, y, z, w),
                                                now,
@@ -77,5 +85,11 @@ class OdomCombine:
             rate.sleep()
 
 if __name__ == "__main__":
-    odomc = OdomCombine()
+    # Load parameters
+    base_frame = rospy.get_param("~base_frame", "base_link")
+    calib_scale = rospy.get_param("~orient_calib_scale", 1.0)
+    calib_offset = rospy.get_param("~orient_calib_offset", 0.0)
+    odomc = OdomCombine(base_frame, odom_combine, calib_scale, calib_offset)
+
+    # Do odometry combine
     odomc.odom_combine()
