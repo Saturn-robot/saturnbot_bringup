@@ -12,13 +12,12 @@ Combine data from imu and wheels' odometry,
 and publish accurate odometry and TF between odom and base_frame
 """
 class OdomCombine:
-    def __init__(self, base_frame='base_footprint', name='odom_combine', calib_scale=1.0, calib_offset=0.0):
-        self.base_frame = base_frame
-        self.name = name
-        self.calib_scale = calib_scale
-        self.calib_offset = calib_offset
-
-        rospy.init_node(name, log_level=rospy.INFO)
+    def __init__(self):
+        rospy.init_node('odom_combine', log_level=rospy.INFO)
+        # Load parameters
+        self.base_frame = rospy.get_param("~base_frame", 'base_link')
+        self.calib_scale = rospy.get_param("~orient_calib_scale", 10.0)
+        self.calib_offset = rospy.get_param("~orient_calib_offset", 0.0)
 
         # Subscribe odometry data and imu data
         rospy.Subscriber('arduino/odom', Odometry, self.odom_callback)
@@ -36,8 +35,6 @@ class OdomCombine:
         rospy.logdebug("Get imu data!")
         # Acquire imu data from imu device
         self.odom_orient = imu_data.orientation
-
-
 
     def odom_callback(self, odom_data):
         rospy.logdebug("Get odometry data!")
@@ -69,7 +66,7 @@ class OdomCombine:
                                                now,
                                                self.base_frame,
                                                "odom")
-            rospy.loginfo("Orient Data: %s %s %s %s", x, y, z, w)
+            rospy.logdebug("Orient Data: %s %s %s %s", x, y, z, w)
             # Create odom data and publish it
             odom = Odometry()
             odom.header.frame_id = "odom"
@@ -85,11 +82,8 @@ class OdomCombine:
             rate.sleep()
 
 if __name__ == "__main__":
-    # Load parameters
-    base_frame = rospy.get_param("~base_frame", "base_link")
-    calib_scale = rospy.get_param("~orient_calib_scale", 1.0)
-    calib_offset = rospy.get_param("~orient_calib_offset", 0.0)
-    odomc = OdomCombine(base_frame, odom_combine, calib_scale, calib_offset)
-
-    # Do odometry combine
-    odomc.odom_combine()
+    try:
+        odom_combine = OdomCombine()
+        odom_combine.odom_combine()
+    except KeyboardInterrupt:
+        rospy.loginfo("odom_combine is being closed...")
