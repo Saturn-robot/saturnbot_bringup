@@ -1,9 +1,20 @@
 <launch>
-  <!-- start publishing odometry data and running base controller -->
-  <include file="$(find ros_arduino_python)/launch/arduino.launch" />
-  <!-- Publish static transform: base_link to base_footprint -->
-  <!--node pkg="tf" type="static_transform_publisher" name="base_link_to_base_footprint"
-    args="0 0 -0.025 0 0 0 /base_link /base_footprint 100" /-->
-  <!-- start teleop_twist_keyboard to controll saturn robot -->
-  <!--node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="saturn_teleop" output="screen" /-->
+  <!-- start publishing sensor data and running base controller -->
+  <node name="arduino" pkg="ros_arduino_python" type="arduino_node.py" output="screen" clear_params="true" required="true">
+      <rosparam file="$(find ros_arduino_python)/config/my_arduino_params.yaml" command="load" />
+      <remap from="arduino/sensor/GY85" to="imu/data_raw" />
+      <remap from="odom" to="arduino/odom" />
+  </node>
+
+  <!-- start imu data filter -->
+  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+    <param name="use_mag" value="false" />
+    <param name="use_magnetic_field_msg" value="false" />
+    <param name="publish_tf" value="false" />
+  </node>
+
+  <!-- start odometry combine -->
+  <node name="odom_combine" pkg="saturn_bringup" type="odom_combine.py"  output="screen">
+    <rosparam file="$(find saturn_bringup)/config/odom_combine_params.yaml" command="load" />
+  </node>
 </launch>
