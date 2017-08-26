@@ -36,14 +36,14 @@ class OdomCombine:
         rospy.logdebug("Get imu data!")
         # Acquire imu data from imu device
         self.odom_orient = imu_data.orientation
-
+        self.angular_vel = imu_data.angular_velocity.z;
     def odom_callback(self, odom_data):
         rospy.logdebug("Get odometry data!")
         # Acquire data from odometry data from wheels' encoder
         self.odom_posit = odom_data.pose.pose.position
         self.linear_vel_x = odom_data.twist.twist.linear.x
         self.linear_vel_y = odom_data.twist.twist.linear.y
-        self.angular_vel = odom_data.twist.twist.angular.z
+        #self.angular_vel = odom_data.twist.twist.angular.z
 
     def odom_combine(self):
         rate = rospy.Rate(10)
