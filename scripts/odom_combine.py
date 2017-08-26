@@ -28,7 +28,8 @@ class OdomCombine:
         # Initialize data
         self.odom_posit = Point()
         self.odom_orient = Quaternion()
-        self.linear_vel = 0.0
+        self.linear_vel_x = 0.0
+        self.linear_vel_y = 0.0
         self.angular_vel = 0.0
 
     def imu_callback(self, imu_data):
@@ -40,7 +41,8 @@ class OdomCombine:
         rospy.logdebug("Get odometry data!")
         # Acquire data from odometry data from wheels' encoder
         self.odom_posit = odom_data.pose.pose.position
-        self.linear_vel = odom_data.twist.twist.linear.x
+        self.linear_vel_x = odom_data.twist.twist.linear.x
+        self.linear_vel_y = odom_data.twist.twist.linear.y
         self.angular_vel = odom_data.twist.twist.angular.z
 
     def odom_combine(self):
@@ -74,8 +76,8 @@ class OdomCombine:
             odom.header.stamp = now
             odom.pose.pose.position = self.odom_posit
             odom.pose.pose.orientation = quat
-            odom.twist.twist.linear.x = self.linear_vel
-            odom.twist.twist.linear.y = 0
+            odom.twist.twist.linear.x = self.linear_vel_x
+            odom.twist.twist.linear.y = self.linear_vel_y
             odom.twist.twist.angular.z = self.angular_vel
 
             self.odomPub.publish(odom)
