@@ -1,4 +1,13 @@
 <launch>
+  <!-- start imu data filter -->
+  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+    <param name="use_mag" value="false" />
+    <param name="use_magnetic_field_msg" value="false" />
+    <param name="publish_tf" value="false" />
+    <remap from="imu/data" to="imu_data" />
+  </node>
+
+  <!-- start robot pose ekf -->
   <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
     <param name="output_frame" value="odom"/>
     <param name="freq" value="30.0"/>
@@ -9,5 +18,9 @@
     <param name="debug" value="false"/>
     <param name="self_diagnose" value="false"/>
     <remap from="robot_pose_ekf/odom_combined" to="input" />
+  </node>
+
+  <!-- start odometry converter -->
+  <node name="odom_converter" pkg="saturn_bringup" type="publish_odom.py"  output="screen">
   </node>
 </launch>
