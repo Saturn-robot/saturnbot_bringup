@@ -1,11 +1,4 @@
 <launch>
-  <!-- start publishing sensor data and running base controller -->
-  <node name="arduino" pkg="ros_arduino_python" type="arduino_node.py" output="screen" clear_params="true" required="true">
-      <rosparam file="$(find ros_arduino_python)/config/my_arduino_params.yaml" command="load" />
-      <remap from="arduino/sensor/GY85" to="imu/data_raw" />
-      <remap from="odom" to="arduino/odom" />
-  </node>
-
   <!-- start imu data filter -->
   <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
     <param name="use_mag" value="false" />
