@@ -1,6 +1,0 @@
-<launch>
-  <node name="imu_filter" pkg="imu_complementary_filter" type="complementary_filter_node" output="screen">
-    <param name="use_mag" value="false" />
-    <param name="publish_tf" value="false" />
-  </node>
-</launch>
