@@ -7,7 +7,7 @@
   </node>
 
   <!-- start odometry combine -->
-  <node name="odom_combine" pkg="saturn_bringup" type="odom_combine.py"  output="screen">
-    <rosparam file="$(find saturn_bringup)/config/odom_combine_params.yaml" command="load" />
+  <node name="odom_combine" pkg="saturnbot_bringup" type="odom_combine.py"  output="screen">
+    <rosparam file="$(find saturnbot_bringup)/config/odom_combine_params.yaml" command="load" />
   </node>
 </launch>

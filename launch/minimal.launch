@@ -27,5 +27,5 @@
   </node>
 
   <!-- start odometry converter -->
-  <node name="odom_converter" pkg="saturn_bringup" type="convert_odom.py"  output="screen" />
+  <node name="odom_converter" pkg="saturnbot_bringup" type="convert_odom.py"  output="screen" />
 </launch>
