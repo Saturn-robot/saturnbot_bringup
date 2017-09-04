@@ -55,7 +55,7 @@ class OdomCombine:
         rospy.logdebug("Get imu data!")
         # Acquire imu data from imu device
         self.odom_orient = imu_data.orientation
-        self.angular_vel = imu_data.angular_velocity.z;
+        self.angular_vel = imu_data.angular_velocity.z
     def odom_callback(self, odom_data):
         rospy.logdebug("Get odometry data!")
         # Acquire data from odometry data from wheels' encoder
