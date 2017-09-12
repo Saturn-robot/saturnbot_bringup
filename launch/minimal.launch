@@ -1,14 +1,14 @@
 <launch>
   <!-- start publishing sensor data and running base controller -->
-  <node name="arduino" pkg="ros_arduino_python" type="arduino_node.py" output="screen" clear_params="true" required="true">
-      <rosparam file="$(find ros_arduino_python)/config/complex_odom_params.yaml" command="load" />
+  <node name="saturnbot_controller" pkg="base_controller" type="arduino_node.py" output="screen" clear_params="true" required="true">
+      <rosparam file="$(find base_controller)/config/complex_odom_params.yaml" command="load" />
       <remap from="arduino/sensor/GY85" to="imu/data_raw" />
   </node>
 
   <!-- start imu data filter -->
   <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
-    <param name="use_mag" value="false" />
-    <param name="use_magnetic_field_msg" value="false" />
+    <param name="use_mag" value="true" />
+    <param name="use_magnetic_field_msg" value="true" />
     <param name="publish_tf" value="false" />
     <remap from="imu/data" to="imu_data" />
   </node>
