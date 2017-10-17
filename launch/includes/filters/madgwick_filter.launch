@@ -1,0 +1,12 @@
+<launch>
+  <arg name="mag_used" default="false" />
+  <!-- start imu data filter -->
+  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" output="screen">
+    <param name="use_mag" value="$(arg mag_used)" />
+    <param name="use_magnetic_field_msg" value="true" />
+    <param name="publish_tf" value="false" />
+    <remap from="imu/data_raw" to="saturnbot_controller/sensor/GY85" />
+    <remap from="imu/data" to="imu_data" />
+  </node>
+
+</launch>

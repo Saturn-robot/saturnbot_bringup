@@ -2,7 +2,7 @@
   <!-- start publishing sensor data and running base controller -->
   <node name="saturnbot_controller" pkg="base_controller" type="arduino_node.py" output="screen" clear_params="true" required="true">
       <rosparam file="$(find base_controller)/config/complex_odom_params.yaml" command="load" />
-      <remap from="saturnbot_controller/sensor/GY85" to="imu/data_raw" />
+      <!-- <remap from="saturnbot_controller/sensor/GY85" to="imu/data_raw" /> -->
   </node>
   <arg name="mag_used" default="false" />
   <!-- start imu data filter -->
@@ -13,8 +13,10 @@
     <remap from="imu/data" to="imu_data" />
   </node>
 
-  <!-- start robot pose ekf -->
-  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+  <!-- start robot localization filter -->
+  <arg name="filter" default="ukf" />
+  <include file="$(find saturnbot_bringup)/launch/includes/filters/$(arg filter)_for2d.launch" />
+  <!-- <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
     <param name="output_frame" value="odom"/>
     <param name="freq" value="30.0"/>
     <param name="sensor_timeout" value="1.0"/>
@@ -24,8 +26,8 @@
     <param name="debug" value="false"/>
     <param name="self_diagnose" value="false"/>
     <remap from="robot_pose_ekf/odom_combined" to="input" />
-  </node>
+  </node> -->
 
   <!-- start odometry converter -->
-  <node name="odom_converter" pkg="saturnbot_bringup" type="convert_odom.py"  output="screen" />
+  <!-- <node name="odom_converter" pkg="saturnbot_bringup" type="convert_odom.py"  output="screen" /> -->
 </launch>
