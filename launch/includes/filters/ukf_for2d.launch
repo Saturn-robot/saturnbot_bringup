@@ -203,7 +203,7 @@
 
       <!--  By default, the node outputs an Odometry message with the topic name odometry/filtered. Uncomment and modify this
             line if you want the node to output to another topic-->
-      <!-- <remap from="odometry/filtered" to="your_desired_topic"/> -->
+      <remap from="odometry/filtered" to="fused_odom"/>
 
     </node>
 
