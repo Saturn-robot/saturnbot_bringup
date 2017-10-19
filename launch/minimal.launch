@@ -20,7 +20,7 @@
   </node-->
 
   <!-- start robot localization filter -->
-  <arg name="filter" default="ukf" />
+  <arg name="filter" default="ekf" />
   <include file="$(find saturnbot_bringup)/launch/includes/filters/$(arg filter)_for2d.launch" />
   <!-- <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
     <param name="output_frame" value="odom"/>

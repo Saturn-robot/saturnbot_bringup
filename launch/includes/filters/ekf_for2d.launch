@@ -76,7 +76,7 @@
            making this parameter required for each sensor. -->
            <rosparam param="odom0_config">[true, true, false,
                                            false, false, true,
-                                           true, false, false,
+                                           true, false, true,
                                            false, false, true,
                                            false, false, false]</rosparam>
 
@@ -103,7 +103,7 @@
            this is acceptable. For orientation variables, it can lead to trouble. Users should make sure that all orientation
            variables have at least one source of absolute measurement. -->
       <param name="odom0_differential" value="false"/>
-      <param name="imu0_differential" value="false"/>
+      <param name="imu0_differential" value="true"/>
 
       <!-- When the node starts, if this parameter is true, then the first measurement is treated as a "zero point" for all
            future measurements. While you can achieve the same effect with the differential paremeter, the key difference is
@@ -189,7 +189,7 @@
 
 
       <!--  Placeholder for output topic remapping -->
-      <remap from="odometry/filtered" to="output"/>
+      <remap from="odometry/filtered" to="fused_odom"/>
 
     </node>
 
